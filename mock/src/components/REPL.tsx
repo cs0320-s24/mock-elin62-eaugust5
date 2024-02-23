@@ -15,6 +15,7 @@ import { REPLInput } from "./REPLInput";
 export default function REPL() {
   // TODO: Add some kind of shared state that holds all the commands submitted.
   const [history, setHistory] = useState<string[]>([]);
+  const [mode, setModeStatus] = useState<string>("");
 
   return (
     <div className="repl">
@@ -23,7 +24,8 @@ export default function REPL() {
       {/* TODO: Update your REPLHistory and REPLInput to take in new shared state as props */}
       <REPLHistory history={history} />
       <hr></hr>
-      <REPLInput history={history} setHistory={setHistory} />
+      <REPLInput history={history} setHistory={setHistory} 
+      mode={mode} setMode={setModeStatus} />
     </div>
   );
 }

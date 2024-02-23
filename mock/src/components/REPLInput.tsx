@@ -1,10 +1,14 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
+import { stdout } from "process";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: string[];
+  loaded_file: string;
+  mode: string;
+  //setMode: Dispatch<SetStateAction<string>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
@@ -16,6 +20,8 @@ export function REPLInput(props: REPLInputProps) {
   // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
 
+  const [mode, setMode] = useState<string>("brief");
+
   // TODO WITH TA: build a handleSubmit function called in button onClick
   // TODO: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
   // add to it with new commands.
@@ -23,9 +29,36 @@ export function REPLInput(props: REPLInputProps) {
    * We suggest breaking down this component into smaller components, think about the individual pieces
    * of the REPL and how they connect to each other...
    */
+  function changeMode(props: REPLInputProps) {
+    return <h1>Mode, {props.mode}</h1>
+  }
+
+  function handleMode(mode: string) {
+    if ((mode = "brief")) {
+      setMode("verbose");
+      // print should be verbose
+      console.log("should be verbose");
+      console.log(mode);
+      return mode;
+    }
+    if ((mode = "verbose")) {
+      setMode("brief");
+      // print should be brief
+      console.log("should be brief");
+      console.log(mode);
+      return mode;
+    } else {
+      setMode("brief");
+      return mode;
+    }
+  }
+
   function handleSubmit(commandString: string) {
     setCount(count + 1);
     props.setHistory([...props.history, commandString]);
+    if ((commandString = "mode")) {
+      handleMode(mode);
+    }
     setCommandString("");
   }
 
