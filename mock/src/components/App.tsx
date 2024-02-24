@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/App.css";
 import { LoginButton } from "./LoginButton";
+import { Mode } from "./Mode";
 import REPL from "./REPL";
 
 /**
@@ -9,7 +10,7 @@ import REPL from "./REPL";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  // const [mode, setMode] = useState<string>("brief");
+  const [mode, setMode] = useState<string>("brief");
 
   return (
     <div className="App">
@@ -17,7 +18,7 @@ function App() {
         <h1>Mock</h1>
         <LoginButton isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       </p>
-      {/* <div>Current Mode: {mode}</div> */}
+      {/* <*Mode mode={mode} setMode={setMode}/> */}
       {isLoggedIn && <REPL />}
     </div>
   );

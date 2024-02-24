@@ -8,10 +8,14 @@ interface REPLInputProps {
   history: string[];
   loaded_file: string;
   mode: string;
+  command: string;
   result: string;
+
+  setCommand: Dispatch<SetStateAction<string>>;
   setResult: Dispatch<SetStateAction<string[]>>;
   setMode: Dispatch<SetStateAction<string>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
+  setCommandResults: Dispatch<SetStateAction<Map<string, string>>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -23,7 +27,19 @@ export function REPLInput(props: REPLInputProps) {
   const [count, setCount] = useState<number>(0);
 
   const [mode, setMode] = useState<string>("brief");
+  const [command, setCommand] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [map, setMap] = useState(new Map());
+
+  const updateMap = (key: string, value: string) => {
+    console.log("is it running here?");
+    setMap((map) => new Map(map.set(key, value)));
+  };
+
+  // function setMapEntries(commandString:string, result:string){
+  //   props.setCommand(commandString);
+
+  // }
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
   // TODO: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
@@ -39,6 +55,8 @@ export function REPLInput(props: REPLInputProps) {
   //     </h1>
   //   );
   // }
+
+  
 
   function handleSubmit(commandString: string) {
     setCount(count + 1);
@@ -72,7 +90,16 @@ export function REPLInput(props: REPLInputProps) {
       <button
         aria-label={"Submit"}
         onClick={() => {
+          updateMap(commandString, map.get(commandString));
           if (commandString === "mode") handleSubmit(commandString);
+          updateMap(commandString, mode);
+          console.log(map);
+          // if brief:
+          // print just the output for that given command
+
+          // if verbose:
+          // print the name of the command
+          // print the result of the command
         }}
       >
         Submit {count} times!
