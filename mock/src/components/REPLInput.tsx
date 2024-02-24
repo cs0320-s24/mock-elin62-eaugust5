@@ -8,7 +8,9 @@ interface REPLInputProps {
   history: string[];
   loaded_file: string;
   mode: string;
-  //setMode: Dispatch<SetStateAction<string>>;
+  result: string;
+  setResult: Dispatch<SetStateAction<string[]>>;
+  setMode: Dispatch<SetStateAction<string>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
@@ -21,6 +23,7 @@ export function REPLInput(props: REPLInputProps) {
   const [count, setCount] = useState<number>(0);
 
   const [mode, setMode] = useState<string>("brief");
+  const [result, setResult] = useState<string>("");
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
   // TODO: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
@@ -29,35 +32,23 @@ export function REPLInput(props: REPLInputProps) {
    * We suggest breaking down this component into smaller components, think about the individual pieces
    * of the REPL and how they connect to each other...
    */
-  function changeMode(props: REPLInputProps) {
-    return <h1>Mode, {props.mode}</h1>
-  }
-
-  function handleMode(mode: string) {
-    if ((mode = "brief")) {
-      setMode("verbose");
-      // print should be verbose
-      console.log("should be verbose");
-      console.log(mode);
-      return mode;
-    }
-    if ((mode = "verbose")) {
-      setMode("brief");
-      // print should be brief
-      console.log("should be brief");
-      console.log(mode);
-      return mode;
-    } else {
-      setMode("brief");
-      return mode;
-    }
-  }
+  // function changeMode(props: REPLInputProps) {
+  //   return (
+  //     <h1>
+  //       Mode, {props.mode} setMode={setMode}
+  //     </h1>
+  //   );
+  // }
 
   function handleSubmit(commandString: string) {
     setCount(count + 1);
     props.setHistory([...props.history, commandString]);
-    if ((commandString = "mode")) {
-      handleMode(mode);
+    // props.setResult([...props.result, result])
+    console.log(mode);
+    if (props.mode === "brief") {
+      props.setMode("mode = verbose");
+    } else {
+      props.setMode("mode = brief");
     }
     setCommandString("");
   }
