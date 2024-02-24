@@ -10,6 +10,8 @@ interface REPLInputProps {
   mode: string;
   command: string;
   result: string;
+  isLoaded: boolean;
+  filePath: string;
 
   setCommand: Dispatch<SetStateAction<string>>;
   setResult: Dispatch<SetStateAction<string[]>>;
@@ -25,15 +27,23 @@ export function REPLInput(props: REPLInputProps) {
   const [commandString, setCommandString] = useState<string>("");
   // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [filePath, setFilePath] = useState<string>("");
 
   const [mode, setMode] = useState<string>("brief");
   const [command, setCommand] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [map, setMap] = useState(new Map());
 
-  const updateMap = (key: string, value: string) => {
-    console.log("is it running here?");
-    setMap((map) => new Map(map.set(key, value)));
+  const updateMap = () => {
+    setMap(
+      (map) => new Map(map.set("load_file", load_file(commandString, filePath)))
+    );
+    setMap((map) => new Map(map.set("mode", changeMode)));
+    // setMap((map) => new Map(map.set("view", view_file));
+    //setMap((map) => new Map(map.set("search", search_file)));
+    // For new additions:
+    // setMap((map) => new Map(map.set(key, func)));
   };
 
   // function setMapEntries(commandString:string, result:string){
@@ -56,19 +66,37 @@ export function REPLInput(props: REPLInputProps) {
   //   );
   // }
 
-  
+  function load_file(command: string, filePath: string) {
+    // console.log("inside load_file");
+    if (command === "load_file") {
+      if (filePath != null) {
+        setFilePath(filePath);
+        setIsLoaded(true);
+      }
+    }
+  }
+
+  function changeMode(commandString: string) {
+    if (mode === "brief") {
+      //console.log("should be verbose");
+      setMode("verbose");
+    } else {
+      //console.log("should be brief");
+      setMode("brief");
+    }
+  }
 
   function handleSubmit(commandString: string) {
     setCount(count + 1);
     props.setHistory([...props.history, commandString]);
     // props.setResult([...props.result, result])
-    console.log(mode);
-    if (mode === "brief") {
-      setMode("verbose");
-    } else {
-      setMode("brief");
-    }
+    //console.log(mode);
     setCommandString("");
+  }
+
+  function splitCommandString(commandString: string) {
+    var newArray = commandString.split(" ");
+    return newArray;
   }
 
   return (
@@ -90,10 +118,20 @@ export function REPLInput(props: REPLInputProps) {
       <button
         aria-label={"Submit"}
         onClick={() => {
-          updateMap(commandString, map.get(commandString));
-          if (commandString === "mode") handleSubmit(commandString);
-          updateMap(commandString, mode);
-          console.log(map);
+          updateMap();
+          let command = splitCommandString(commandString)[0];
+          let filePath = splitCommandString(commandString)[1];
+          let func = map.get(command);
+          if (map.has(command)) {
+            func(command);
+          }
+          // func(
+          //   splitCommandString(commandString)[0],
+          //   splitCommandString(commandString)[1]
+          // );
+          console.log(mode);
+          handleSubmit(commandString);
+
           // if brief:
           // print just the output for that given command
 
