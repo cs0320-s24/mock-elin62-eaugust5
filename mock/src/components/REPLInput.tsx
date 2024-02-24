@@ -45,10 +45,10 @@ export function REPLInput(props: REPLInputProps) {
     props.setHistory([...props.history, commandString]);
     // props.setResult([...props.result, result])
     console.log(mode);
-    if (props.mode === "brief") {
-      props.setMode("mode = verbose");
+    if (mode === "brief") {
+      setMode("verbose");
     } else {
-      props.setMode("mode = brief");
+      setMode("brief");
     }
     setCommandString("");
   }

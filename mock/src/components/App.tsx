@@ -9,7 +9,7 @@ import REPL from "./REPL";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [mode, setMode] = useState<string>("brief");
+  // const [mode, setMode] = useState<string>("brief");
 
   return (
     <div className="App">
