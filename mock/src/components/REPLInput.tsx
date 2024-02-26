@@ -29,6 +29,7 @@ export function REPLInput(props: REPLInputProps) {
   const [count, setCount] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [filePath, setFilePath] = useState<string>("");
+  const [loadedFilePath, setLoadedFilePath] = useState<string>("");
 
   const [mode, setMode] = useState<string>("brief");
   const [command, setCommand] = useState<string>("");
@@ -87,10 +88,35 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   function handleSubmit(commandString: string) {
+    const [command, arg] = commandString.split(/\s+(.+)/); // Split at the first space
+    // const [command, arg] = commandString.split(" ");
+    let result = "";
+    switch (command) {
+      case "mode":
+        setMode(mode === "brief" ? "verbose" : "brief"); // Toggle mode
+        result = `Switched to ${mode === "brief" ? "verbose" : "brief"} mode.`;
+        break;
+      case "load_file":
+        setLoadedFilePath(arg || "");
+        result = `Loaded file: ${arg}`;
+        break;
+      case "view":
+        if (loadedFilePath) {
+          // Assume CSV data retrieval logic here
+          result = `Viewing contents of file: ${loadedFilePath}`;
+        } else {
+          result = "No file loaded.";
+        }
+        break;
+      default:
+        result = `Command not recognized: ${command}`;
+        break;
+    }
+    props.setHistory((history) => [
+      ...history,
+      `${commandString} => ${result}`,
+    ]);
     setCount(count + 1);
-    props.setHistory([...props.history, commandString]);
-    // props.setResult([...props.result, result])
-    //console.log(mode);
     setCommandString("");
   }
 
@@ -118,19 +144,24 @@ export function REPLInput(props: REPLInputProps) {
       <button
         aria-label={"Submit"}
         onClick={() => {
-          updateMap();
-          let command = splitCommandString(commandString)[0];
-          let filePath = splitCommandString(commandString)[1];
-          let func = map.get(command);
-          if (map.has(command)) {
-            func(command);
-          }
+          // updateMap();
+          // let command = splitCommandString(commandString)[0];
+          // let filePath = splitCommandString(commandString)[1];
+          // let func = map.get(command);
+          // if (map.has(command)) {
+          //   func(command);
+          // }
           // func(
           //   splitCommandString(commandString)[0],
           //   splitCommandString(commandString)[1]
           // );
-          console.log(mode);
+
           handleSubmit(commandString);
+          console.log(mode);
+          console.log(loadedFilePath);
+          console.log(props.history);
+          console.log(props.result);
+          console.log(props.command);
 
           // if brief:
           // print just the output for that given command

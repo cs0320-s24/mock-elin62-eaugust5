@@ -16,6 +16,8 @@ export default function REPL() {
   // TODO: Add some kind of shared state that holds all the commands submitted.
   const [history, setHistory] = useState<string[]>([]);
   const [mode, setMode] = useState<string>("");
+  const [loaded_file, setLoadedFilePath] = useState<string>("");
+  const [filePath, setFilePath] = useState<string>("");
 
   return (
     <div className="repl">
@@ -29,6 +31,10 @@ export default function REPL() {
         setHistory={setHistory}
         mode={mode}
         setMode={setMode}
+        loaded_file={loaded_file}
+        setLoadedFilePath={setLoadedFilePath}
+        filePath={filePath}
+        setFilePath={setFilePath}
       />
     </div>
   );
