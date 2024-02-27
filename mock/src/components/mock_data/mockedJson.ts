@@ -1,18 +1,20 @@
 // type ExampleCSVs = {
 //   [key: string]: string[][];
 // };
+export const mockedJson = new Map<string, string[][]>();
 
+const exampleCSV1 = [
+  ["1", "2", "3", "4", "5"],
+  ["The", "song", "remains", "the", "same."],
+];
 
-const [mockedJson, setMockedJson] = new Map<string, string[][]>()
-mockedJson.set(exampledCSV1);
+const exampleCSV2 = [
+  ["Another", "example", "line"],
+  ["And", "another", "line"],
+];
 
-const exampleCSV1: [
-      ["The", "song", "remains", "the", "same."],
-      ["This", "is", "a", "test", "file."],
-    ]
-
-
-
+mockedJson.set("exampleCSV1", exampleCSV1);
+mockedJson.set("exampleCSV2", exampleCSV2);
 
 // export const exampleCSVs: ExampleCSVs = {
 //   exampleCSV1: [

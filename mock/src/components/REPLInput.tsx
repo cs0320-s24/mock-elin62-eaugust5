@@ -2,21 +2,18 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import "../components/mock_data/mockedJson";
-import { exampleCSVs } from "./mock_data/mockedJson"; // Import example CSV data
-
+import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
 import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: string[];
-  loaded_file: string;
   mode: string;
   command: string;
   result: string;
   isLoaded: boolean;
   filePath: string;
-  mockedJson: Map<string, string[][]>;
 
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setCommand: Dispatch<SetStateAction<string>>;
@@ -34,15 +31,14 @@ export function REPLInput(props: REPLInputProps) {
   // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-  const [mockedJson, setMockedJson] = useState<Map<string, string[][]>>(
-    new Map(Object.entries(exampleCSVs))
-  );
+  // const [mockedJson, setMockedJson] = useState<Map<string, string[][]>>(
+  //   new Map(Object.entries(exampleCSVs))
+  // );
 
   // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [filePath, setFilePath] = useState<string>("");
-  const [loadedFilePath, setLoadedFilePath] = useState<string>("");
 
   const [mode, setMode] = useState<string>("brief");
   const [command, setCommand] = useState<string>("");
@@ -85,17 +81,12 @@ export function REPLInput(props: REPLInputProps) {
         result = `Switched to ${newMode} mode.`;
         break;
       case "load_file":
-        const filePath = args[0] || "";
-        setLoadedFilePath(filePath);
+        setFilePath(args[0] || "");
+        console.log(filePath);
         if (filePath) {
           setIsLoaded(true);
           result = `Loaded file: ${filePath}`;
-          setMockedJson((prevMockedJson) => {
-            const newMockedJson = new Map(prevMockedJson);
-            // Update mockedJson with the loaded file path and its data
-            newMockedJson.set(filePath, exampleCSVs[filePath]);
-            return newMockedJson;
-          });
+          const mockedData = mockedJson.get(filePath);
         } else {
           setIsLoaded(false);
           result = "No file loaded";
@@ -103,12 +94,16 @@ export function REPLInput(props: REPLInputProps) {
         break;
       case "view":
         if (isLoaded) {
-          const fileContents = exampleCSVs[loadedFilePath] || null;
+          console.log(filePath);
+          const fileContents = mockedJson.get(filePath) || null;
+          console.log(fileContents);
           if (fileContents) {
-            result = `Viewing contents of file: ${loadedFilePath} ${fileContents}`;
+            result = `Viewing contents of file: ${filePath} ${fileContents}`;
+            // data = fileContents;
+            // console.log(data);
           }
         } else {
-          result = `File ${loadedFilePath} not found.`;
+          result = `File ${filePath} not found.`;
         }
         break;
       case "search":

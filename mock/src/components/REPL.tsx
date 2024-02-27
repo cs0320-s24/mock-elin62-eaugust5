@@ -32,8 +32,6 @@ export default function REPL() {
         setHistory={setHistory}
         mode={mode}
         setMode={setMode}
-        loaded_file={loaded_file}
-        setLoadedFilePath={setLoadedFilePath}
         filePath={filePath}
         setFilePath={setFilePath}
         mockedJson={mockedJson}
