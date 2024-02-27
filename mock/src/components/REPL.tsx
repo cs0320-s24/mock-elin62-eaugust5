@@ -18,6 +18,7 @@ export default function REPL() {
   const [mode, setMode] = useState<string>("");
   const [loaded_file, setLoadedFilePath] = useState<string>("");
   const [filePath, setFilePath] = useState<string>("");
+  const [mockedJson, setMockedJson] = useState(new Map());
 
   return (
     <div className="repl">
@@ -35,6 +36,8 @@ export default function REPL() {
         setLoadedFilePath={setLoadedFilePath}
         filePath={filePath}
         setFilePath={setFilePath}
+        mockedJson={mockedJson}
+        setMockedJson={setMockedJson}
       />
     </div>
   );
