@@ -18,7 +18,6 @@ export default function REPL() {
   const [mode, setMode] = useState<string>("");
   const [loaded_file, setLoadedFilePath] = useState<string>("");
   const [filePath, setFilePath] = useState<string>("");
-  console.log(mode); // Log the initial value of mode
 
   return (
     <div className="repl">

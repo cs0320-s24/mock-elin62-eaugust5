@@ -1,6 +1,7 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
+import "../components/mock_data/mockedJson";
 import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
 
@@ -13,12 +14,16 @@ interface REPLInputProps {
   result: string;
   isLoaded: boolean;
   filePath: string;
+  mockedJson: Map<string, string[][]>;
 
+  setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setCommand: Dispatch<SetStateAction<string>>;
   setResult: Dispatch<SetStateAction<string[]>>;
   setMode: Dispatch<SetStateAction<string>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
   setCommandResults: Dispatch<SetStateAction<Map<string, string>>>;
+  setSearchResults: Dispatch<SetStateAction<string[]>>;
+  setMockedJson: Dispatch<SetStateAction<Map<string, string[][]>>>;
   // create a search command that holds the results from a given search term
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
@@ -27,6 +32,7 @@ export function REPLInput(props: REPLInputProps) {
   // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
+  const [mockedJson, setMockedJson] = useState(new Map());
   // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -38,16 +44,16 @@ export function REPLInput(props: REPLInputProps) {
   const [result, setResult] = useState<string>("");
   const [map, setMap] = useState(new Map());
 
-  const updateMap = () => {
-    setMap(
-      (map) => new Map(map.set("load_file", load_file(commandString, filePath)))
-    );
-    setMap((map) => new Map(map.set("mode", changeMode)));
-    // setMap((map) => new Map(map.set("view", view_file));
-    //setMap((map) => new Map(map.set("search", search_file)));
-    // For new additions:
-    // setMap((map) => new Map(map.set(key, func)));
-  };
+  // const updateMap = () => {
+  //   setMap(
+  //     (map) => new Map(map.set("load_file", load_file(commandString, filePath)))
+  //   );
+  //   setMap((map) => new Map(map.set("mode", changeMode)));
+  //   // setMap((map) => new Map(map.set("view", view_file));
+  //   //setMap((map) => new Map(map.set("search", search_file)));
+  //   // For new additions:
+  //   // setMap((map) => new Map(map.set(key, func)));
+  // };
 
   // function setMapEntries(commandString:string, result:string){
   //   props.setCommand(commandString);
@@ -61,33 +67,6 @@ export function REPLInput(props: REPLInputProps) {
    * We suggest breaking down this component into smaller components, think about the individual pieces
    * of the REPL and how they connect to each other...
    */
-  // function changeMode(props: REPLInputProps) {
-  //   return (
-  //     <h1>
-  //       Mode, {props.mode} setMode={setMode}
-  //     </h1>
-  //   );
-  // }
-
-  function load_file(command: string, filePath: string) {
-    // console.log("inside load_file");
-    if (command === "load_file") {
-      if (filePath != null) {
-        setFilePath(filePath);
-        setIsLoaded(true);
-      }
-    }
-  }
-
-  function changeMode(commandString: string) {
-    if (mode === "brief") {
-      //console.log("should be verbose");
-      setMode("verbose");
-    } else {
-      //console.log("should be brief");
-      setMode("brief");
-    }
-  }
 
   function handleSubmit(commandString: string) {
     const [command, ...args] = commandString.split(/\s+/); // split at each space
@@ -99,18 +78,30 @@ export function REPLInput(props: REPLInputProps) {
         break;
       case "load_file":
         setLoadedFilePath(args[0] || "");
-        result = `Loaded file: ${args[0]}`;
+        if (args[0] != null) {
+          setIsLoaded(true);
+          result = `Loaded file: ${args[0]}`;
+          mockedJson.set(loadedFilePath, mockedJson.get(loadedFilePath));
+        } else {
+          setIsLoaded(false);
+          result = "No file loaded";
+        }
         break;
       case "view":
-        if (loadedFilePath) {
+        console.log(isLoaded);
+        if (isLoaded) {
+          console.log(loadedFilePath);
+          console.log(props.mockedJson);
           // Assume CSV data retrieval logic here
-          result = `Viewing contents of file: ${loadedFilePath}`;
+          result = `Viewing contents of file: ${loadedFilePath} ${props.mockedJson.get(
+            loadedFilePath
+          )}`;
         } else {
           result = "No file loaded.";
         }
         break;
       case "search":
-        if (loadedFilePath) {
+        if (isLoaded) {
           result = `The following rows contain the searchterm (${args[1]}): `;
         } else {
           result = "No file loaded.";
@@ -160,13 +151,9 @@ export function REPLInput(props: REPLInputProps) {
           //   splitCommandString(commandString)[0],
           //   splitCommandString(commandString)[1]
           // );
+          console.log(isLoaded);
 
           handleSubmit(commandString);
-          console.log(mode);
-          console.log(loadedFilePath);
-          console.log(props.history);
-          console.log(props.result);
-          console.log(props.command);
 
           // if brief:
           // print just the output for that given command
