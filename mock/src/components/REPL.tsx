@@ -18,13 +18,14 @@ export default function REPL() {
   const [mode, setMode] = useState<string>("");
   const [loaded_file, setLoadedFilePath] = useState<string>("");
   const [filePath, setFilePath] = useState<string>("");
+  console.log(mode); // Log the initial value of mode
 
   return (
     <div className="repl">
       {/*This is where your REPLHistory might go... You also may choose to add it within your REPLInput 
       component or somewhere else depending on your component organization. What are the pros and cons of each? */}
       {/* TODO: Update your REPLHistory and REPLInput to take in new shared state as props */}
-      <REPLHistory history={history} />
+      <REPLHistory history={history} mode={mode} />
       <hr></hr>
       <REPLInput
         history={history}

@@ -2,6 +2,7 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { stdout } from "process";
+import { REPLHistory } from "./REPLHistory";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -18,6 +19,7 @@ interface REPLInputProps {
   setMode: Dispatch<SetStateAction<string>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
   setCommandResults: Dispatch<SetStateAction<Map<string, string>>>;
+  // create a search command that holds the results from a given search term
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -88,17 +90,16 @@ export function REPLInput(props: REPLInputProps) {
   }
 
   function handleSubmit(commandString: string) {
-    const [command, arg] = commandString.split(/\s+(.+)/); // Split at the first space
-    // const [command, arg] = commandString.split(" ");
+    const [command, ...args] = commandString.split(/\s+/); // split at each space
     let result = "";
     switch (command) {
       case "mode":
-        setMode(mode === "brief" ? "verbose" : "brief"); // Toggle mode
+        setMode(mode === "brief" ? "verbose" : "brief"); // toggle mode
         result = `Switched to ${mode === "brief" ? "verbose" : "brief"} mode.`;
         break;
       case "load_file":
-        setLoadedFilePath(arg || "");
-        result = `Loaded file: ${arg}`;
+        setLoadedFilePath(args[0] || "");
+        result = `Loaded file: ${args[0]}`;
         break;
       case "view":
         if (loadedFilePath) {
@@ -108,14 +109,18 @@ export function REPLInput(props: REPLInputProps) {
           result = "No file loaded.";
         }
         break;
+      case "search":
+        if (loadedFilePath) {
+          result = `The following rows contain the searchterm (${args[1]}): `;
+        } else {
+          result = "No file loaded.";
+        }
+        break;
       default:
         result = `Command not recognized: ${command}`;
         break;
     }
-    props.setHistory((history) => [
-      ...history,
-      `${commandString} => ${result}`,
-    ]);
+    props.setHistory((history) => [...history, `${command} => ${result}`]);
     setCount(count + 1);
     setCommandString("");
   }
