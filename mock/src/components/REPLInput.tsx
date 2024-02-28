@@ -1,5 +1,5 @@
 import "../styles/main.css";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import "../components/mock_data/mockedJson";
 import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
@@ -39,6 +39,7 @@ export function REPLInput(props: REPLInputProps) {
   const [count, setCount] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [filePath, setFilePath] = useState<string>("");
+  // const [filePath, setFilePath] = useEffect("");
 
   const [mode, setMode] = useState<string>("brief");
   const [command, setCommand] = useState<string>("");
@@ -74,19 +75,21 @@ export function REPLInput(props: REPLInputProps) {
   function handleSubmit(commandString: string) {
     const [command, ...args] = commandString.split(/\s+/); // split at each space
     let result = "";
+    let dataTable: string[][];
     switch (command) {
       case "mode":
         const newMode = mode === "brief" ? "verbose" : "brief";
+        console.log(newMode);
         setMode(newMode); // Update mode immediately
         result = `Switched to ${newMode} mode.`;
         break;
       case "load_file":
         setFilePath(args[0] || "");
+        // setFilePath(args[0] || "");
         console.log(filePath);
         if (filePath) {
           setIsLoaded(true);
           result = `Loaded file: ${filePath}`;
-          const mockedData = mockedJson.get(filePath);
         } else {
           setIsLoaded(false);
           result = "No file loaded";
@@ -98,9 +101,9 @@ export function REPLInput(props: REPLInputProps) {
           const fileContents = mockedJson.get(filePath) || null;
           console.log(fileContents);
           if (fileContents) {
-            result = `Viewing contents of file: ${filePath} ${fileContents}`;
-            // data = fileContents;
-            // console.log(data);
+            result = `Viewing contents of file: ${filePath}`;
+            dataTable = fileContents.map((x) => x.map((x) => x));
+            console.log(dataTable);
           }
         } else {
           result = `File ${filePath} not found.`;
@@ -117,7 +120,10 @@ export function REPLInput(props: REPLInputProps) {
         result = `Command not recognized: ${command}`;
         break;
     }
-    props.setHistory((history) => [...history, `${command} => ${result}`]);
+    props.setHistory((history) => [
+      ...history,
+      `${command} => ${result} => ${dataTable}`,
+    ]);
     setCount(count + 1);
     setCommandString("");
   }
@@ -157,7 +163,6 @@ export function REPLInput(props: REPLInputProps) {
           //   splitCommandString(commandString)[0],
           //   splitCommandString(commandString)[1]
           // );
-          console.log(isLoaded);
 
           handleSubmit(commandString);
 
