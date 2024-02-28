@@ -14,6 +14,7 @@ interface REPLInputProps {
   result: string;
   isLoaded: boolean;
   filePath: string;
+  dataTable: string[][];
 
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setCommand: Dispatch<SetStateAction<string>>;
@@ -23,6 +24,9 @@ interface REPLInputProps {
   setCommandResults: Dispatch<SetStateAction<Map<string, string>>>;
   setSearchResults: Dispatch<SetStateAction<string[]>>;
   setMockedJson: Dispatch<SetStateAction<Map<string, string[][]>>>;
+  setDataTable: Dispatch<SetStateAction<string[][]>>;
+  setTableVisible: (tableVisible: boolean) => void;
+
   // create a search command that holds the results from a given search term
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
@@ -45,6 +49,8 @@ export function REPLInput(props: REPLInputProps) {
   const [command, setCommand] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [map, setMap] = useState(new Map());
+  const [dataTable, setDataTable] = useState<string[][]>([]);
+  const [tableVisible, setTableVisible] = useState<boolean>(false); // Initialize boolean state
 
   // Set mockedJson state when component mounts
 
@@ -75,7 +81,6 @@ export function REPLInput(props: REPLInputProps) {
   function handleSubmit(commandString: string) {
     const [command, ...args] = commandString.split(/\s+/); // split at each space
     let result = "";
-    let dataTable: string[][];
     switch (command) {
       case "mode":
         const newMode = mode === "brief" ? "verbose" : "brief";
@@ -85,11 +90,17 @@ export function REPLInput(props: REPLInputProps) {
         break;
       case "load_file":
         setFilePath(args[0] || "");
-        // setFilePath(args[0] || "");
-        console.log(filePath);
         if (filePath) {
-          setIsLoaded(true);
-          result = `Loaded file: ${filePath}`;
+          const fileContents = mockedJson.get(filePath) || null;
+          if (fileContents) {
+            setDataTable(fileContents); // Update the dataTable state
+            setIsLoaded(true);
+            result = `Loaded file: ${filePath}`;
+            setTableVisible(false); // Reset the boolean state
+          } else {
+            setIsLoaded(false);
+            result = `File ${filePath} not found.`;
+          }
         } else {
           setIsLoaded(false);
           result = "No file loaded";
@@ -97,20 +108,15 @@ export function REPLInput(props: REPLInputProps) {
         break;
       case "view":
         if (isLoaded) {
-          console.log(filePath);
-          const fileContents = mockedJson.get(filePath) || null;
-          console.log(fileContents);
-          if (fileContents) {
-            result = `Viewing contents of file: ${filePath}`;
-            dataTable = fileContents.map((x) => x.map((x) => x));
-            console.log(dataTable);
-          }
+          setTableVisible(true);
+          result = `Viewing contents of file: ${filePath}`;
         } else {
           result = `File ${filePath} not found.`;
         }
         break;
       case "search":
         if (isLoaded) {
+          setTableVisible(true); // Set the boolean state for view or search commands
           result = `The following rows contain the searchterm (${args[1]}): `;
         } else {
           result = "No file loaded.";
@@ -120,17 +126,12 @@ export function REPLInput(props: REPLInputProps) {
         result = `Command not recognized: ${command}`;
         break;
     }
-    props.setHistory((history) => [
-      ...history,
-      `${command} => ${result} => ${dataTable}`,
-    ]);
+    props.setHistory((history) => [...history, `${command} => ${result}`]);
+    console.log(dataTable);
+    props.setDataTable(dataTable);
+    props.setTableVisible(tableVisible);
     setCount(count + 1);
     setCommandString("");
-  }
-
-  function splitCommandString(commandString: string) {
-    var newArray = commandString.split(" ");
-    return newArray;
   }
 
   return (
@@ -152,26 +153,8 @@ export function REPLInput(props: REPLInputProps) {
       <button
         aria-label={"Submit"}
         onClick={() => {
-          // updateMap();
-          // let command = splitCommandString(commandString)[0];
-          // let filePath = splitCommandString(commandString)[1];
-          // let func = map.get(command);
-          // if (map.has(command)) {
-          //   func(command);
-          // }
-          // func(
-          //   splitCommandString(commandString)[0],
-          //   splitCommandString(commandString)[1]
-          // );
-
           handleSubmit(commandString);
-
-          // if brief:
-          // print just the output for that given command
-
-          // if verbose:
-          // print the name of the command
-          // print the result of the command
+          console.log(dataTable);
         }}
       >
         Submit {count} times!

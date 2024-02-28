@@ -16,16 +16,22 @@ export default function REPL() {
   // TODO: Add some kind of shared state that holds all the commands submitted.
   const [history, setHistory] = useState<string[]>([]);
   const [mode, setMode] = useState<string>("");
-  const [loaded_file, setLoadedFilePath] = useState<string>("");
   const [filePath, setFilePath] = useState<string>("");
   const [mockedJson, setMockedJson] = useState(new Map());
+  const [dataTable, setDataTable] = useState<string[][]>([]);
+  const [tableVisible, setTableVisible] = useState<boolean>(false); // Initialize boolean state
 
   return (
     <div className="repl">
       {/*This is where your REPLHistory might go... You also may choose to add it within your REPLInput 
       component or somewhere else depending on your component organization. What are the pros and cons of each? */}
       {/* TODO: Update your REPLHistory and REPLInput to take in new shared state as props */}
-      <REPLHistory history={history} mode={mode} />
+      <REPLHistory
+        history={history}
+        mode={mode}
+        dataTable={dataTable}
+        tableVisible={tableVisible}
+      />
       <hr></hr>
       <REPLInput
         history={history}
@@ -36,6 +42,10 @@ export default function REPL() {
         setFilePath={setFilePath}
         mockedJson={mockedJson}
         setMockedJson={setMockedJson}
+        dataTable={dataTable}
+        setDataTable={setDataTable}
+        tableVisible={tableVisible}
+        setTableVisible={setTableVisible} // Pass setTableVisible as a prop to REPLInput
       />
     </div>
   );
