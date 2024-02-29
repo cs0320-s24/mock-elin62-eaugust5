@@ -16,6 +16,7 @@ interface REPLInputProps {
   filePath: string;
   dataTable: string[][];
   fileContents: string[][];
+  // matchingRows: string[];
 
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setCommand: Dispatch<SetStateAction<string>>;
@@ -103,7 +104,6 @@ export function REPLInput(props: REPLInputProps) {
         } else {
           console.error(`File ${newFilePath} not found.`);
         }
-        console.log(newFileContents);
         if (newFilePath) {
           if (newFileContents != null) {
             const trueState = true;
@@ -121,8 +121,6 @@ export function REPLInput(props: REPLInputProps) {
           }
         } else {
           setIsLoaded(false);
-          console.log(filePath);
-          console.log(fileContents);
           result = "No file loaded";
         }
         break;
