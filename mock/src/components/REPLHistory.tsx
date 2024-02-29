@@ -15,29 +15,53 @@ export function REPLHistory(props: REPLHistoryProps) {
     const [command, result] = item.split(" => ");
     return { command, result };
   });
+
+  let dataTableContent = null;
+  if (props.tableVisible) {
+    dataTableContent = (
+      <table>
+        <caption>DataTable:</caption>
+        {props.dataTable.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row.map((col, colIndex) => (
+              <td key={colIndex}>{col}</td>
+            ))}
+          </tr>
+        ))}
+      </table>
+    );
+  }
+
   return (
     <div className="repl-history">
       {/* This is where command history will go */}
       {/* TODO: To go through all the pushed commands... try the .map() function! */}
       {parsedHistory.map(({ command, result }, index) => (
         <div key={index}>
-          {/* {props.mode === "verbose" &&  */}
           <p>Command: {command} </p>
           <p>Result: {result} </p>
-          {props.tableVisible && (
-            <table>
-              <caption>DataTable:</caption>
-              {props.dataTable.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((col, colIndex) => (
-                    <td key={colIndex}>{col}</td>
-                  ))}
-                </tr>
-              ))}
-            </table>
-          )}
         </div>
       ))}
+      {dataTableContent}
     </div>
+    //     <div key={index}>
+    //       {/* {props.mode === "verbose" &&  */}
+    //       <p>Command: {command} </p>
+    //       <p>Result: {result} </p>
+    //       {props.tableVisible && (
+    //         <table>
+    //           <caption>DataTable:</caption>
+    //           {props.dataTable.map((row, rowIndex) => (
+    //             <tr key={rowIndex}>
+    //               {row.map((col, colIndex) => (
+    //                 <td key={colIndex}>{col}</td>
+    //               ))}
+    //             </tr>
+    //           ))}
+    //         </table>
+    //       )}
+    //     </div>
+    //   ))}
+    // </div>
   );
 }
