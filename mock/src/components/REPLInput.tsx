@@ -145,6 +145,8 @@ export function REPLInput(props: REPLInputProps) {
           }
           const column = args[0]; // Column is the first argument
           const searchTerm = args[1]; // Search term is the second argument
+          console.log(column);
+          console.log(searchTerm);
           const matchingRows = dataTable.filter(
             (row) => row[parseInt(column, 10)] === searchTerm
           );

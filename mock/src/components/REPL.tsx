@@ -45,7 +45,7 @@ export default function REPL() {
         dataTable={dataTable}
         setDataTable={setDataTable}
         tableVisible={tableVisible}
-        setTableVisible={setTableVisible} // Pass setTableVisible as a prop to REPLInput
+        setTableVisible={setTableVisible}
       />
     </div>
   );
