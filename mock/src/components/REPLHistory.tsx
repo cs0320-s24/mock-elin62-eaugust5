@@ -16,7 +16,6 @@ export function REPLHistory(props: REPLHistoryProps) {
     const [command, result] = item.split(" => ");
     return { command, result };
   });
-
   let dataTableContent = null;
   if (props.tableVisible) {
     dataTableContent = (
