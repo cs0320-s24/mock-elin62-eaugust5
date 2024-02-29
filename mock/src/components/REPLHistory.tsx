@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../styles/main.css";
 
 interface REPLHistoryProps {
@@ -9,6 +10,8 @@ interface REPLHistoryProps {
 }
 
 export function REPLHistory(props: REPLHistoryProps) {
+  //const [dataTableVisible, setDataTableVisible] = useState(false);
+
   console.log(props.dataTable);
   console.log(props.tableVisible);
   const parsedHistory = props.history.map((item) => {

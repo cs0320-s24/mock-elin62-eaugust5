@@ -74,8 +74,47 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("Awesome command");
+  await page.getByLabel("Command input").fill("mode");
   await page.getByLabel("Submit").click();
-  const mock_input = `Awesome command`;
-  await expect(page.getByText("Awesome command")).toBeVisible();
+  await expect(page.getByText("Command: mode")).toBeVisible();
+});
+
+test("after loading a file, the filepath is stored for viewing or searching", async ({
+  page,
+}) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath = "mock_filepath.csv";
+  await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+  await page.getByLabel("Submit").click();
+  await expect(
+    page.getByText("Result: Loaded file: " + mock_filePath)
+  ).toBeVisible();
+});
+
+// test("after loading a file, isLoaded is set to true", async ({
+//   page,
+// }) => {
+//   // Assuming the view or search command is issued after login
+//   await page.goto("http://localhost:8000/");
+//   await page.getByLabel("Login").click();
+//   await page.getByLabel("Command input").click();
+//   const mock_filePath = "mock_filepath.csv";
+//   await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+//   await page.getByLabel("Submit").click();
+//   await expect(page.getByText("DataTable:")).toBeVisible();
+// });
+
+test("after viewing or searching, the data table is visible", async ({
+  page,
+}) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("view");
+  await page.getByLabel("Submit").click();
+  await expect(page.getByText("DataTable:")).toBeVisible();
 });
