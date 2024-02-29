@@ -13,8 +13,16 @@ const exampleCSV2 = [
   ["And", "another", "line"],
 ];
 
+const exampleCSV3 = [
+  ["column1", "column2", "column3", "column4"],
+  ["a", "b", "c", "d"],
+  ["e", "f", "g", "h"],
+  ["a", "b", "y", "z"],
+];
+
 mockedJson.set("exampleCSV1", exampleCSV1);
 mockedJson.set("exampleCSV2", exampleCSV2);
+mockedJson.set("exampleCSV3", exampleCSV3);
 
 // export const exampleCSVs: ExampleCSVs = {
 //   exampleCSV1: [

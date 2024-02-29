@@ -10,8 +10,8 @@ interface REPLHistoryProps {
 }
 
 export function REPLHistory(props: REPLHistoryProps) {
-  console.log(props.dataTable);
-  console.log(props.tableVisible);
+  // console.log(props.dataTable);
+  // console.log(props.tableVisible);
   const parsedHistory = props.history.map((item) => {
     const [command, result] = item.split(" => ");
     return { command, result };

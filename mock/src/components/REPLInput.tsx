@@ -15,6 +15,7 @@ interface REPLInputProps {
   isLoaded: boolean;
   filePath: string;
   dataTable: string[][];
+  fileContents: string[][];
 
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setCommand: Dispatch<SetStateAction<string>>;
@@ -26,6 +27,7 @@ interface REPLInputProps {
   setMockedJson: Dispatch<SetStateAction<Map<string, string[][]>>>;
   setDataTable: Dispatch<SetStateAction<string[][]>>;
   setTableVisible: (tableVisible: boolean) => void;
+  setFileContents: Dispatch<SetStateAction<string[][]>>;
 
   // create a search command that holds the results from a given search term
 }
@@ -50,6 +52,8 @@ export function REPLInput(props: REPLInputProps) {
   const [result, setResult] = useState<string>("");
   const [map, setMap] = useState(new Map());
   const [dataTable, setDataTable] = useState<string[][]>([]);
+  const [fileContents, setFileContents] = useState<string[][]>([]);
+
   const [tableVisible, setTableVisible] = useState<boolean>(false); // Initialize boolean state
 
   // Set mockedJson state when component mounts
@@ -81,6 +85,8 @@ export function REPLInput(props: REPLInputProps) {
   function handleSubmit(commandString: string) {
     const [command, ...args] = commandString.split(/\s+/); // split at each space
     let result = "";
+    let newFilePath = args[0];
+    let newFileContents = mockedJson.get(newFilePath);
     switch (command) {
       case "mode":
         const newMode = mode === "brief" ? "verbose" : "brief";
@@ -89,26 +95,42 @@ export function REPLInput(props: REPLInputProps) {
         result = `Switched to ${newMode} mode.`;
         break;
       case "load_file":
-        setFilePath(args[0] || "");
-        if (filePath) {
-          const fileContents = mockedJson.get(filePath) || null;
-          if (fileContents) {
-            setDataTable(fileContents); // Update the dataTable state
-            setIsLoaded(true);
-            result = `Loaded file: ${filePath}`;
-            setTableVisible(false); // Reset the boolean state
+        setFilePath(args[0]);
+        console.log(newFilePath);
+        if (newFileContents !== undefined) {
+          setFileContents(newFileContents);
+          console.log(newFileContents);
+        } else {
+          console.error(`File ${newFilePath} not found.`);
+        }
+        console.log(newFileContents);
+        if (newFilePath) {
+          if (newFileContents != null) {
+            const trueState = true;
+            const falseState = false;
+            const newDataTable = newFileContents;
+            console.log(newFileContents);
+            setDataTable(newFileContents);
+            setIsLoaded(trueState);
+            console.log(props.dataTable); // dataTable is still empty
+            result = `Loaded file: ${newFilePath}`;
+            setTableVisible(falseState); // Reset the boolean state
           } else {
             setIsLoaded(false);
             result = `File ${filePath} not found.`;
           }
         } else {
           setIsLoaded(false);
+          console.log(filePath);
+          console.log(fileContents);
           result = "No file loaded";
         }
         break;
       case "view":
         if (isLoaded) {
+          console.log(dataTable);
           setTableVisible(true);
+          console.log(filePath);
           result = `Viewing contents of file: ${filePath}`;
         } else {
           result = `File ${filePath} not found.`;
@@ -116,8 +138,24 @@ export function REPLInput(props: REPLInputProps) {
         break;
       case "search":
         if (isLoaded) {
-          setTableVisible(true); // Set the boolean state for view or search commands
-          result = `The following rows contain the searchterm (${args[1]}): `;
+          if (args.length < 2) {
+            result =
+              "Please provide both column and search term for the search command.";
+            break;
+          }
+          const column = args[0]; // Column is the first argument
+          const searchTerm = args[1]; // Search term is the second argument
+          const matchingRows = dataTable.filter(
+            (row) => row[parseInt(column, 10)] === searchTerm
+          );
+          if (matchingRows.length > 0) {
+            setTableVisible(true); // Set the boolean state for view or search commands
+            result = `The following rows in column ${column} contain the search term "${searchTerm}":`;
+            // Display matching rows
+            props.setDataTable(matchingRows);
+          } else {
+            result = `No matching rows found in column ${column} for search term "${searchTerm}".`;
+          }
         } else {
           result = "No file loaded.";
         }
