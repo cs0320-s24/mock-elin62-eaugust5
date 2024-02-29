@@ -127,7 +127,6 @@ export function REPLInput(props: REPLInputProps) {
         break;
     }
     props.setHistory((history) => [...history, `${command} => ${result}`]);
-    console.log(dataTable);
     props.setDataTable(dataTable);
     props.setTableVisible(tableVisible);
     setCount(count + 1);
@@ -154,7 +153,7 @@ export function REPLInput(props: REPLInputProps) {
         aria-label={"Submit"}
         onClick={() => {
           handleSubmit(commandString);
-          console.log(dataTable);
+          // console.log(dataTable);
         }}
       >
         Submit {count} times!
