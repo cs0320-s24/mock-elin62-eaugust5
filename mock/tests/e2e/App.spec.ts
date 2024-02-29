@@ -94,6 +94,7 @@ test("after loading a file, the filepath is stored for viewing or searching", as
   ).toBeVisible();
 });
 
+// test not finished
 // test("after loading a file, isLoaded is set to true", async ({
 //   page,
 // }) => {
@@ -118,3 +119,7 @@ test("after viewing or searching, the data table is visible", async ({
   await page.getByLabel("Submit").click();
   await expect(page.getByText("DataTable:")).toBeVisible();
 });
+
+// test for search
+// test for mode
+// test for adding a command by the developer

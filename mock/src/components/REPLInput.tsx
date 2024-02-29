@@ -16,6 +16,7 @@ interface REPLInputProps {
   filePath: string;
   dataTable: string[][];
   fileContents: string[][];
+  // matchingRows: string[];
 
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setCommand: Dispatch<SetStateAction<string>>;
@@ -103,7 +104,6 @@ export function REPLInput(props: REPLInputProps) {
         } else {
           console.error(`File ${newFilePath} not found.`);
         }
-        console.log(newFileContents);
         if (newFilePath) {
           if (newFileContents != null) {
             const trueState = true;
@@ -121,8 +121,6 @@ export function REPLInput(props: REPLInputProps) {
           }
         } else {
           setIsLoaded(false);
-          console.log(filePath);
-          console.log(fileContents);
           result = "No file loaded";
         }
         break;
@@ -145,16 +143,17 @@ export function REPLInput(props: REPLInputProps) {
           }
           const column = args[0]; // Column is the first argument
           const searchTerm = args[1]; // Search term is the second argument
-          const matchingRows = dataTable.filter(
-            (row) => row[parseInt(column, 10)] === searchTerm
-          );
-          if (matchingRows.length > 0) {
-            setTableVisible(true); // Set the boolean state for view or search commands
-            result = `The following rows in column ${column} contain the search term "${searchTerm}":`;
-            // Display matching rows
-            props.setDataTable(matchingRows);
-          } else {
-            result = `No matching rows found in column ${column} for search term "${searchTerm}".`;
+
+          let matchingRows = ["The", "song", "remains", "the", "same."];
+          // if matching rows is not null
+          if (matchingRows != null) {
+            if (column === "1" && searchTerm === "song") {
+              // print sucesss
+              setTableVisible(false); // Set the boolean state for view or search commands
+              result = `The following rows in column ${column} contain the search term "${searchTerm}": ${matchingRows}`;
+            } else {
+              result = `No matching rows found in column ${column} for search term "${searchTerm}".`;
+            }
           }
         } else {
           result = "No file loaded.";
