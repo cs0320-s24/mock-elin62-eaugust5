@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
-import { REPLFunction } from "./REPLFunction";
+import { CommandFunctionMap, REPLFunction } from "./REPLFunction";
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -21,6 +21,12 @@ export default function REPL() {
   const [mockedJson, setMockedJson] = useState(new Map());
   const [dataTable, setDataTable] = useState<string[][]>([]);
   const [tableVisible, setTableVisible] = useState<boolean>(false); // Initialize boolean state
+  const [commandFunctionMap, setCommandFunctionMap] =
+    useState<CommandFunctionMap>({});
+  // const isLoaded: boolean = false;
+  // const commandFunctionMap: CommandFunctionMap = {};
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [fileContents, setFileContents] = useState<string[][]>([]);
 
   return (
     <div className="repl">
@@ -42,11 +48,16 @@ export default function REPL() {
         filePath={filePath}
         setFilePath={setFilePath}
         mockedJson={mockedJson}
-        mockedJson={setMockedJson}
+        setMockedJson={setMockedJson}
         dataTable={dataTable}
         setDataTable={setDataTable}
         tableVisible={tableVisible}
         setTableVisible={setTableVisible}
+        commandFunctionMap={commandFunctionMap}
+        // setCommandFunctionMap={setCommandFunctionMap}
+        isLoaded={isLoaded}
+        setIsLoaded={setIsLoaded}
+        setFileContents={setFileContents}
       />
     </div>
   );

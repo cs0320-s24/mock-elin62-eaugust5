@@ -5,25 +5,33 @@ import "../components/mock_data/mockedJson";
 import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
 import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
-import { REPLExport, REPLFunction, REPLFunctionProps } from "./REPLFunction";
+import {
+  REPLExport,
+  REPLFunction,
+  REPLFunctionProps,
+  CommandFunctionMap,
+} from "./REPLFunction";
 
 interface REPLInputProps extends REPLFunction {
   // map string to REPLfunction
   // use state for mode
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: string[];
-  displayOutput: []; // holds command and output, index at [1] if brief
+  // displayOutput: []; // holds command and output, index at [1] if brief
   mode: string;
   mockedJson: string[][];
   isLoaded: boolean;
   filePath: string;
   fileContents: string[][];
+  commandFunctionMap: CommandFunctionMap;
+
   setHistory: Dispatch<SetStateAction<string[]>>;
   setMode: Dispatch<SetStateAction<string>>;
   setMockedJson: Dispatch<SetStateAction<string[][]>>;
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setFilePath: Dispatch<SetStateAction<string>>;
   setFileContents: Dispatch<SetStateAction<string[][]>>;
+  setCommandFunctionMap: Dispatch<SetStateAction<CommandFunctionMap>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -57,9 +65,30 @@ export function REPLInput(props: REPLInputProps) {
    * of the REPL and how they connect to each other...
    */
 
-  function handleSubmit(props: REPLInputProps, commandString: string) {
+  function handleSubmit(
+    // props: REPLInputProps & REPLFunctionProps,
+    commandString: string
+  ) {
+    console.log(props.commandFunctionMap);
     const [command, ...args] = commandString.split(/\s+/); // Split at each space
-    const result = REPLExport(props, command, args);
+
+    const commandMap = REPLExport(props, commandString, args);
+    const commandFunction = commandMap[command];
+    let newDisplayOutput = [command, commandFunction];
+    // const result = commandFunction
+    //   ? commandFunction(args)
+    //   : "Command not recognized";
+    console.log(newDisplayOutput[1]);
+    console.log(commandFunction);
+    const result = commandFunction
+      ? commandFunction(args)
+      : "Command not recognized";
+    // if (commandFunction) {
+
+    // } else {
+    //    = "Command not recognized";
+    // }
+
     // props.displayOutput = [command, result];
     const output =
       props.mode === "brief"
@@ -90,7 +119,7 @@ export function REPLInput(props: REPLInputProps) {
       <button
         aria-label={"Submit"}
         onClick={() => {
-          handleSubmit(props, commandString);
+          handleSubmit(commandString);
           // console.log(dataTable);
         }}
       >

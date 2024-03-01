@@ -42,24 +42,5 @@ export function REPLHistory(props: REPLHistoryProps) {
       ))}
       {dataTableContent}
     </div>
-    //     <div key={index}>
-    //       {/* {props.mode === "verbose" &&  */}
-    //       <p>Command: {command} </p>
-    //       <p>Result: {result} </p>
-    //       {props.tableVisible && (
-    //         <table>
-    //           <caption>DataTable:</caption>
-    //           {props.dataTable.map((row, rowIndex) => (
-    //             <tr key={rowIndex}>
-    //               {row.map((col, colIndex) => (
-    //                 <td key={colIndex}>{col}</td>
-    //               ))}
-    //             </tr>
-    //           ))}
-    //         </table>
-    //       )}
-    //     </div>
-    //   ))}
-    // </div>
   );
 }
