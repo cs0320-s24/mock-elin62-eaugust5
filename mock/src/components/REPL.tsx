@@ -47,17 +47,17 @@ export default function REPL() {
         setMode={setMode}
         filePath={filePath}
         setFilePath={setFilePath}
+        commandFunctionMap={commandFunctionMap}
+        isLoaded={isLoaded}
+        setIsLoaded={setIsLoaded}
+        setFileContents={setFileContents}
         mockedJson={mockedJson}
         setMockedJson={setMockedJson}
         dataTable={dataTable}
         setDataTable={setDataTable}
         tableVisible={tableVisible}
         setTableVisible={setTableVisible}
-        commandFunctionMap={commandFunctionMap}
         // setCommandFunctionMap={setCommandFunctionMap}
-        isLoaded={isLoaded}
-        setIsLoaded={setIsLoaded}
-        setFileContents={setFileContents}
       />
     </div>
   );

@@ -31,35 +31,14 @@ export function REPLExport(
   commandString: string,
   args: string[]
 ): CommandFunctionMap {
-  //   let load_file: REPLFunction;
-  //   let view: REPLFunction;
-  //   let search: REPLFunction;
-  //   // each command is of type REPLFunction
-  //   // lambda statement that lets it take in args as an array of strings
-  //   // returns the various responses
-  //   load_file = (args) => ;
-  //   // set the file Path args[1]
-  //   // return a result message
-  let fileContents = [];
-  let fileLoaded: boolean;
-
   const loadFile = (args: string[]): string => {
     const filePath = args[0];
     props.setFilePath(filePath);
     const newFileContents = mockedJson.get(filePath);
     if (newFileContents) {
-      console.log("is it reaching in here");
       props.setFileContents(newFileContents);
-      console.log(props.fileContents);
     }
-    console.log(props.fileContents);
     if (filePath) {
-      // const newFileContents = mockedJson.get(filePath);
-      fileLoaded = true;
-      // const newFileContents = mockedJson.get(filePath) || [];
-      //fileLoaded = true;
-      //props.isLoaded = fileLoaded;
-
       console.log(props.fileContents);
       return `Loaded file: ${filePath}`;
     }
@@ -67,15 +46,15 @@ export function REPLExport(
   };
 
   const view = (): string | string[][] => {
-    console.log(props.fileContents);
-    console.log(props.filePath);
-    console.log(fileLoaded);
     if (props.filePath != null) {
-      console.log("Is it getting into here?");
-      return props.fileContents;
+      const newFileContents = mockedJson.get(props.filePath);
+      if (newFileContents) {
+        return newFileContents;
+      }
     } else {
       return `Data unable to be viewed.`;
     }
+    return `Error viewing file.`;
   };
 
   const search = (args: string[]): string | string[] => {
