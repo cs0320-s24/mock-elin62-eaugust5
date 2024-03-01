@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
-import { CommandFunctionMap, REPLFunction } from "./REPLFunction";
+import { CommandFunctionMap } from "./REPLFunction";
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -21,8 +21,6 @@ export default function REPL() {
   const [mode, setMode] = useState<string>("brief");
   const [filePath, setFilePath] = useState<string>("");
   const [mockedJson, setMockedJson] = useState(new Map());
-  const [dataTable, setDataTable] = useState<string[][]>([]);
-  const [tableVisible, setTableVisible] = useState<boolean>(false); // Initialize boolean state
   const [commandFunctionMap, setCommandFunctionMap] =
     useState<CommandFunctionMap>({});
   // const isLoaded: boolean = false;
@@ -64,7 +62,6 @@ export default function REPL() {
         setDisplayOutput={setDisplayOutput}
         mockedJson={mockedJson}
         setMockedJson={setMockedJson}
-        // setCommandFunctionMap={setCommandFunctionMap}
       />
     </div>
   );
