@@ -40,33 +40,37 @@ export function REPLExport(
   //   load_file = (args) => ;
   //   // set the file Path args[1]
   //   // return a result message
+  let fileContents = [];
+  let fileLoaded: boolean;
 
   const loadFile = (args: string[]): string => {
-    console.log(args[0]);
     const filePath = args[0];
+    props.setFilePath(filePath);
+    const newFileContents = mockedJson.get(filePath);
+    if (newFileContents) {
+      console.log("is it reaching in here");
+      props.setFileContents(newFileContents);
+      console.log(props.fileContents);
+    }
+    console.log(props.fileContents);
     if (filePath) {
-      const newFileContents = mockedJson.get(filePath);
+      // const newFileContents = mockedJson.get(filePath);
+      fileLoaded = true;
+      // const newFileContents = mockedJson.get(filePath) || [];
+      //fileLoaded = true;
+      //props.isLoaded = fileLoaded;
 
-      if (newFileContents !== undefined) {
-        props.setFileContents(newFileContents);
-        let fileLoaded = true;
-        // const newFileContents = mockedJson.get(filePath) || [];
-        //fileLoaded = true;
-        props.isLoaded = fileLoaded;
-        console.log(newFileContents);
-
-        console.log(props.fileContents);
-        console.log(props.isLoaded);
-        return `Loaded file: ${filePath}`;
-      }
+      console.log(props.fileContents);
+      return `Loaded file: ${filePath}`;
     }
     return `Error loading file.`;
   };
 
   const view = (): string | string[][] => {
     console.log(props.fileContents);
-    console.log(props.isLoaded);
-    if (props.isLoaded) {
+    console.log(props.filePath);
+    console.log(fileLoaded);
+    if (props.filePath != null) {
       console.log("Is it getting into here?");
       return props.fileContents;
     } else {
