@@ -5,7 +5,7 @@ import "../components/mock_data/mockedJson";
 import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
 import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
-import { REPLExport, REPLFunction } from "./REPLFunction";
+import { REPLExport, REPLFunction, toggleMode } from "./REPLFunction";
 
 interface REPLInputProps {
   // map string to REPLfunction
@@ -50,18 +50,16 @@ export function REPLInput(props: REPLInputProps) {
    */
 
   function handleSubmit(commandString: string) {
-    if (commandString == "mode") {
-      if (props.mode == "brief") {
-        props.setMode("verbose");
-      }
-      else {
-        props.setMode("brief");
-      }
+    const [command, ...args] = commandString.split(/\s+/); // Split at each space
+    const result = REPLExport(command, args);
+    if (commandString === "mode") {
+      const newMode = toggleMode(props.mode);
+      props.setMode(newMode); // Update mode state
     }
-
-    REPLExport()
-    const [command, ...args] = commandString.split(/\s+/); // split at each space
-    const result = "";
+    const output =
+      props.mode === "brief"
+        ? `${result}`
+        : `Command: ${command}\nOutput: ${result}`;
 
     props.setHistory((history) => [...history, `${command} => ${result}`]);
     setCount(count + 1);
