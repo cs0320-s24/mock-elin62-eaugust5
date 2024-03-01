@@ -216,6 +216,7 @@ test("running all known commands", async ({ page }) => {
   await page.getByLabel("Submit").click();
   await page.getByLabel("Command input").fill("view");
   
+
   await page.getByLabel("Submit").click();
   await expect(
     page.getByText(`Result: Loaded file: exampleCSV2`)

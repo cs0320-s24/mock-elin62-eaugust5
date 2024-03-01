@@ -31,13 +31,10 @@ export interface REPLFunction {
   (args: Array<string>): String | String[][];
 }
 
-export function REPLExport(
-  props: REPLFunctionProps,
-): CommandFunctionMap {
+export function REPLExport(props: REPLFunctionProps): CommandFunctionMap {
   const changeMode = (): string => {
     const newMode = props.mode === "brief" ? "verbose" : "brief";
     props.setMode(newMode); // Update mode
-    console.log(props.mode);
     return `mode switched to ${newMode}`;
   };
 
@@ -50,7 +47,6 @@ export function REPLExport(
       props.setFileContents(newFileContents);
     }
     if (filePath) {
-      console.log(props.fileContents);
       return `Loaded file: ${filePath}`;
     }
     return `Error loading file.`;

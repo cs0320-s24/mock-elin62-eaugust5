@@ -26,8 +26,6 @@ interface REPLHistoryProps {
 }
 
 export function REPLHistory(props: REPLHistoryProps) {
-  const parsedHistory = props.history.map((item) => {});
-
   return (
     <div className="repl-history">
       {props.history.map(({ command, result }, index) => (
