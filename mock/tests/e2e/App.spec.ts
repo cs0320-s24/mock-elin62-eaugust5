@@ -215,10 +215,11 @@ test("running all known commands", async ({ page }) => {
   await page.getByLabel("Command input").fill("load_file " + mock_filePath1);
   await page.getByLabel("Submit").click();
   await page.getByLabel("Command input").fill("view");
-  
-
+  await page.getByLabel("Command input").fill("search 2 song");
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("mode");
   await page.getByLabel("Submit").click();
   await expect(
-    page.getByText(`Result: Loaded file: exampleCSV2`)
+    page.getByText(`Result: Loaded file: exampleCSV1`)
   ).toBeVisible();
 });

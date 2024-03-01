@@ -20,11 +20,9 @@ export default function REPL() {
   >([]);
   const [mode, setMode] = useState<string>("brief");
   const [filePath, setFilePath] = useState<string>("");
-  const [mockedJson, setMockedJson] = useState(new Map());
+  const [mockedJson, setMockedJson] = useState<string[][]>([]);
   const [commandFunctionMap, setCommandFunctionMap] =
     useState<CommandFunctionMap>({});
-  // const isLoaded: boolean = false;
-  // const commandFunctionMap: CommandFunctionMap = {};
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [fileContents, setFileContents] = useState<string[][]>([]);
   const [displayOutput, setDisplayOutput] = useState<
@@ -38,30 +36,40 @@ export default function REPL() {
       {/* TODO: Update your REPLHistory and REPLInput to take in new shared state as props */}
       <REPLHistory
         history={history}
+        fileContents={fileContents}
+        setHistory={setHistory}
+        setMode={setMode}
+        setIsLoaded={setIsLoaded}
+        setFileContents={setFileContents}
+        setCommandFunctionMap={setCommandFunctionMap}
+        setDisplayOutput={setDisplayOutput}
+        setMockedJson={setMockedJson}
         mode={mode}
         displayOutput={displayOutput}
         filePath={filePath}
         isLoaded={isLoaded}
         commandFunctionMap={commandFunctionMap}
         mockedJson={mockedJson}
-        setFilePath={setFilePath} // Ensure setFilePath is passed
+        setFilePath={setFilePath}
       />
       <hr></hr>
       <REPLInput
         history={history}
+        fileContents={fileContents}
         setHistory={setHistory}
-        mode={mode}
         setMode={setMode}
-        filePath={filePath}
-        setFilePath={setFilePath}
-        commandFunctionMap={commandFunctionMap}
-        isLoaded={isLoaded}
         setIsLoaded={setIsLoaded}
         setFileContents={setFileContents}
-        displayOutput={displayOutput}
+        setCommandFunctionMap={setCommandFunctionMap}
         setDisplayOutput={setDisplayOutput}
-        mockedJson={mockedJson}
         setMockedJson={setMockedJson}
+        mode={mode}
+        displayOutput={displayOutput}
+        filePath={filePath}
+        isLoaded={isLoaded}
+        commandFunctionMap={commandFunctionMap}
+        mockedJson={mockedJson}
+        setFilePath={setFilePath}
       />
     </div>
   );
