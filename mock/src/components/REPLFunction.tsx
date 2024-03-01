@@ -1,12 +1,24 @@
+import { Dispatch, SetStateAction } from "react";
+import { REPLInput } from "./REPLInput";
+
 export interface REPLFunctionProps {
   mode: string;
+  setMode: Dispatch<SetStateAction<string>>;
+  isLoaded: boolean;
+  setIsLoaded: Dispatch<SetStateAction<boolean>>;
+  fileContents: string[][];
+  setFileContents: Dispatch<SetStateAction<string>>[][];
 }
 
 export interface REPLFunction {
-  (args: Array<string>, mode: string): String | String[][];
+  (args: Array<string>): String | String[][];
 }
 
-export function REPLExport(commandString: string, args: string[]) {
+export function REPLExport(
+  props: REPLFunctionProps,
+  commandString: string,
+  args: string[]
+) {
   //   let load_file: REPLFunction;
   //   let view: REPLFunction;
   //   let search: REPLFunction;
@@ -19,7 +31,10 @@ export function REPLExport(commandString: string, args: string[]) {
 
   switch (commandString) {
     case "mode":
-      return;
+      const newMode = props.mode === "brief" ? "verbose" : "brief";
+      console.log(newMode);
+      props.setMode(newMode); // Update mode immediately
+      return `Switched to ${newMode} mode.`;
     case "load_file":
       return loadFile(args);
     case "view":
@@ -40,8 +55,11 @@ export function loadFile(args: string[]) {
 }
 
 export function view(): string | string[][] {
-  // Logic to display full CSV data
-  return "Displaying full CSV data";
+  if (props.isLoaded) {
+    return props.fileContents;
+  } else {
+    return `Data unable to be viewed.`;
+  }
 }
 
 export function search(args: string[]) {
