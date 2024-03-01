@@ -7,7 +7,7 @@ import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
 import { REPLExport, REPLFunction } from "./REPLFunction";
 
-interface REPLInputProps {
+interface REPLInputProps extends REPLFunction {
   // map string to REPLfunction
   // use state for mode
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -16,6 +16,8 @@ interface REPLInputProps {
   setMode: Dispatch<SetStateAction<string>>;
   displayOutput: []; // holds command and output, index at [1] if brief
   mode: string;
+  mockedJson: string[][];
+  setMockedJson: Dispatch<SetStateAction<string[][]>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -49,7 +51,7 @@ export function REPLInput(props: REPLInputProps) {
    * of the REPL and how they connect to each other...
    */
 
-  function handleSubmit(commandString: string) {
+  function handleSubmit(props: REPLInputProps, commandString: string) {
     const [command, ...args] = commandString.split(/\s+/); // Split at each space
     const result = REPLExport(props, command, args);
     // props.displayOutput = [command, result];

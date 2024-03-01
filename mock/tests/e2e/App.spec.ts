@@ -79,9 +79,17 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
   await expect(page.getByText("Command: mode")).toBeVisible();
 });
 
-test("after loading a file, the filepath is stored for viewing or searching", async ({
-  page,
-}) => {
+test("after I submit mode, the mode changes", async ({ page }) => {
+  // TODO: Fill this in to test your button push functionality!
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByLabel("Submit").click();
+  await expect(page.getByText("Command: mode")).toBeVisible();
+});
+
+test("after loading a file, the filepath gets printed", async ({ page }) => {
   // Assuming the view or search command is issued after login
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
@@ -94,31 +102,17 @@ test("after loading a file, the filepath is stored for viewing or searching", as
   ).toBeVisible();
 });
 
-// test not finished
-// test("after loading a file, isLoaded is set to true", async ({
+// test("after viewing or searching, the data table is visible", async ({
 //   page,
 // }) => {
 //   // Assuming the view or search command is issued after login
 //   await page.goto("http://localhost:8000/");
 //   await page.getByLabel("Login").click();
 //   await page.getByLabel("Command input").click();
-//   const mock_filePath = "mock_filepath.csv";
-//   await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+//   await page.getByLabel("Command input").fill("view");
 //   await page.getByLabel("Submit").click();
 //   await expect(page.getByText("DataTable:")).toBeVisible();
 // });
-
-test("after viewing or searching, the data table is visible", async ({
-  page,
-}) => {
-  // Assuming the view or search command is issued after login
-  await page.goto("http://localhost:8000/");
-  await page.getByLabel("Login").click();
-  await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("view");
-  await page.getByLabel("Submit").click();
-  await expect(page.getByText("DataTable:")).toBeVisible();
-});
 
 // test for search
 // test for mode
