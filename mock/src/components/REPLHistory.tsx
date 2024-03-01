@@ -1,46 +1,66 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import "../styles/main.css";
+import { CommandFunctionMap } from "./REPLFunction";
 
 interface REPLHistoryProps {
-  // TODO: Fill with some shared state tracking all the pushed commands
-  history: string[];
+  history: { command: string; result: string | string[][] }[];
   mode: string;
-  dataTable: string[][];
-  tableVisible: boolean;
+  mockedJson: string[][];
+  isLoaded: boolean;
+  filePath: string;
+  fileContents: string[][];
+  commandFunctionMap: CommandFunctionMap;
+  displayOutput: Array<[string, string | string[][]]>;
+  setHistory: Dispatch<
+    SetStateAction<{ command: string; result: string | string[][] }[]>
+  >;
+  setMode: Dispatch<SetStateAction<string>>;
+  setMockedJson: Dispatch<SetStateAction<string[][]>>;
+  setIsLoaded: Dispatch<SetStateAction<boolean>>;
+  setFilePath: Dispatch<SetStateAction<string>>;
+  setFileContents: Dispatch<SetStateAction<string[][]>>;
+  setCommandFunctionMap: Dispatch<SetStateAction<CommandFunctionMap>>;
+  setDisplayOutput: Dispatch<
+    SetStateAction<Array<[string, string | string[][]]>>
+  >;
 }
 
 export function REPLHistory(props: REPLHistoryProps) {
-  const parsedHistory = props.history.map((item) => {
-    const [command, result] = item.split(" => ");
-    return { command, result };
-  });
-  let dataTableContent = null;
-  if (props.tableVisible) {
-    dataTableContent = (
-      <table>
-        <caption>DataTable:</caption>
-        {props.dataTable.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row.map((col, colIndex) => (
-              <td key={colIndex}>{col}</td>
-            ))}
-          </tr>
-        ))}
-      </table>
-    );
-  }
+  const parsedHistory = props.history.map((item) => {});
 
   return (
     <div className="repl-history">
-      {/* This is where command history will go */}
-      {/* TODO: To go through all the pushed commands... try the .map() function! */}
-      {parsedHistory.map(({ command, result }, index) => (
+      {props.history.map(({ command, result }, index) => (
         <div key={index}>
-          <p>Command: {command} </p>
-          <p>Result: {result} </p>
+          {/* Checks if mode is equal to verbose, and prints command only if that is true */}
+          {props.mode === "verbose" && <p>Command: {command}</p>}
+          {/* Check if result is an array */}
+
+          {Array.isArray(result) ? (
+            <table>
+              <tbody>
+                {/* Map over each row in the result */}
+                {result.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {/* Map over each cell in the row */}
+                    {row.map((cell, cellIndex) => (
+                      <td aria-label="Row" key={cellIndex}>
+                        {" "}
+                        <span
+                          style={{ display: "none" }}
+                        >{`Row ${cellIndex}`}</span>
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p aria-label="Result">Result: {result}</p> // Display result as a string if it's not an array
+          )}
         </div>
       ))}
-      {dataTableContent}
     </div>
   );
 }

@@ -12,11 +12,11 @@ import {
   CommandFunctionMap,
 } from "./REPLFunction";
 
-interface REPLInputProps extends REPLFunction {
+export interface REPLInputProps extends REPLFunction {
   // map string to REPLfunction
   // use state for mode
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
-  history: string[];
+  history: { command: string; result: string | string[][] }[];
   // displayOutput: []; // holds command and output, index at [1] if brief
   mode: string;
   mockedJson: string[][];
@@ -24,14 +24,19 @@ interface REPLInputProps extends REPLFunction {
   filePath: string;
   fileContents: string[][];
   commandFunctionMap: CommandFunctionMap;
-
-  setHistory: Dispatch<SetStateAction<string[]>>;
+  displayOutput: Array<[string, string | string[][]]>;
+  setHistory: Dispatch<
+    SetStateAction<{ command: string; result: string | string[][] }[]>
+  >;
   setMode: Dispatch<SetStateAction<string>>;
   setMockedJson: Dispatch<SetStateAction<string[][]>>;
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setFilePath: Dispatch<SetStateAction<string>>;
   setFileContents: Dispatch<SetStateAction<string[][]>>;
   setCommandFunctionMap: Dispatch<SetStateAction<CommandFunctionMap>>;
+  setDisplayOutput: Dispatch<
+    SetStateAction<Array<[string, string | string[][]]>>
+  >;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -41,61 +46,32 @@ export function REPLInput(props: REPLInputProps) {
   const [commandString, setCommandString] = useState<string>("");
   // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
-  // const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  // const [filePath, setFilePath] = useState<string>("");
-  // const [filePath, setFilePath] = useEffect("");
+  // const [displayOutput, setDisplayOutput] = useState<
+  //   Array<[string, string | string[][]]>
+  // >([]);
 
-  // const [mode, setMode] = useState<string>("brief");
-
-  // const [command, setCommand] = useState<string>("");
-  // const [result, setResult] = useState<string>("");
-  // const [map, setMap] = useState(new Map());
-  // const [dataTable, setDataTable] = useState<string[][]>([]);
-  // const [fileContents, setFileContents] = useState<string[][]>([]);
-
-  // const [tableVisible, setTableVisible] = useState<boolean>(false); // Initialize boolean state
-
-  // }
-
-  // TODO WITH TA: build a handleSubmit function called in button onClick
-  // TODO: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
-  // add to it with new commands.
   /**
    * We suggest breaking down this component into smaller components, think about the individual pieces
    * of the REPL and how they connect to each other...
    */
 
-  function handleSubmit(
-    // props: REPLInputProps & REPLFunctionProps,
-    commandString: string
-  ) {
+  function handleSubmit(commandString: string) {
     console.log(props.commandFunctionMap);
     const [command, ...args] = commandString.split(/\s+/); // Split at each space
-
     const commandMap = REPLExport(props, commandString, args);
     const commandFunction = commandMap[command];
-    let newDisplayOutput = [command, commandFunction];
-    // const result = commandFunction
-    //   ? commandFunction(args)
-    //   : "Command not recognized";
-    console.log(newDisplayOutput[1]);
-    console.log(commandFunction);
-    const result = commandFunction
+    const result: string | string[][] = commandFunction
       ? commandFunction(args)
       : "Command not recognized";
-    // if (commandFunction) {
+    const newDisplayOutput: [string, string | string[][]] = [command, result];
+    console.log(commandFunction);
+    console.log(newDisplayOutput);
+    props.setDisplayOutput((prevDisplayOutput) => [
+      ...prevDisplayOutput,
+      newDisplayOutput,
+    ]);
 
-    // } else {
-    //    = "Command not recognized";
-    // }
-
-    // props.displayOutput = [command, result];
-    const output =
-      props.mode === "brief"
-        ? `${result}`
-        : `Command: ${command}\nOutput: ${result}`;
-
-    props.setHistory((history) => [...history, `${command} => ${result}`]);
+    props.setHistory((history) => [...history, { command, result }]);
     setCount(count + 1);
     setCommandString("");
   }
@@ -120,7 +96,6 @@ export function REPLInput(props: REPLInputProps) {
         aria-label={"Submit"}
         onClick={() => {
           handleSubmit(commandString);
-          // console.log(dataTable);
         }}
       >
         Submit {count} times!

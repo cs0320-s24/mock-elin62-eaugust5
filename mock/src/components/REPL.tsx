@@ -15,8 +15,10 @@ import { CommandFunctionMap, REPLFunction } from "./REPLFunction";
 
 export default function REPL() {
   // TODO: Add some kind of shared state that holds all the commands submitted.
-  const [history, setHistory] = useState<string[]>([]);
-  const [mode, setMode] = useState<string>("");
+  const [history, setHistory] = useState<
+    { command: string; result: string | string[][] }[]
+  >([]);
+  const [mode, setMode] = useState<string>("brief");
   const [filePath, setFilePath] = useState<string>("");
   const [mockedJson, setMockedJson] = useState(new Map());
   const [dataTable, setDataTable] = useState<string[][]>([]);
@@ -27,6 +29,9 @@ export default function REPL() {
   // const commandFunctionMap: CommandFunctionMap = {};
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [fileContents, setFileContents] = useState<string[][]>([]);
+  const [displayOutput, setDisplayOutput] = useState<
+    Array<[string, string | string[][]]>
+  >([]);
 
   return (
     <div className="repl">
@@ -36,8 +41,12 @@ export default function REPL() {
       <REPLHistory
         history={history}
         mode={mode}
-        dataTable={dataTable}
-        tableVisible={tableVisible}
+        displayOutput={displayOutput}
+        filePath={filePath}
+        isLoaded={isLoaded}
+        commandFunctionMap={commandFunctionMap}
+        mockedJson={mockedJson}
+        setFilePath={setFilePath} // Ensure setFilePath is passed
       />
       <hr></hr>
       <REPLInput
@@ -51,12 +60,10 @@ export default function REPL() {
         isLoaded={isLoaded}
         setIsLoaded={setIsLoaded}
         setFileContents={setFileContents}
+        displayOutput={displayOutput}
+        setDisplayOutput={setDisplayOutput}
         mockedJson={mockedJson}
         setMockedJson={setMockedJson}
-        dataTable={dataTable}
-        setDataTable={setDataTable}
-        tableVisible={tableVisible}
-        setTableVisible={setTableVisible}
         // setCommandFunctionMap={setCommandFunctionMap}
       />
     </div>

@@ -69,24 +69,28 @@ test("after I click the button, its label increments", async ({ page }) => {
   await expect(page.getByLabel("Submit")).toHaveText("Submit 2 times!");
 });
 
-test("after I click the button, my command gets pushed", async ({ page }) => {
+test("after I click the button, if a command is not recognized, it says command unrecognized", async ({
+  page,
+}) => {
   // TODO: Fill this in to test your button push functionality!
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("mode");
+  await page.getByLabel("Command input").fill("awesome command");
   await page.getByLabel("Submit").click();
-  await expect(page.getByText("Command: mode")).toBeVisible();
+  await expect(page.getByText(`Result: Command not recognized`)).toBeVisible();
 });
 
-test("after I submit mode, the mode changes", async ({ page }) => {
+test("after I submit mode once, the mode changes", async ({ page }) => {
   // TODO: Fill this in to test your button push functionality!
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("mode");
   await page.getByLabel("Submit").click();
-  await expect(page.getByText("Command: mode")).toBeVisible();
+  await expect(
+    page.getByText(`Result: mode switched to verbose`)
+  ).toBeVisible();
 });
 
 test("after loading a file, the filepath gets printed", async ({ page }) => {
@@ -94,25 +98,87 @@ test("after loading a file, the filepath gets printed", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").click();
-  const mock_filePath = "mock_filepath.csv";
-  await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+  const mock_filePath = "exampleCSV1";
+  await page.getByLabel("Command input").fill("load_file " + mock_filePath);
   await page.getByLabel("Submit").click();
   await expect(
-    page.getByText("Result: Loaded file: " + mock_filePath)
+    page.getByText(`Result: Loaded file: ${mock_filePath}`)
   ).toBeVisible();
 });
 
-// test("after viewing or searching, the data table is visible", async ({
-//   page,
-// }) => {
-//   // Assuming the view or search command is issued after login
-//   await page.goto("http://localhost:8000/");
-//   await page.getByLabel("Login").click();
-//   await page.getByLabel("Command input").click();
-//   await page.getByLabel("Command input").fill("view");
-//   await page.getByLabel("Submit").click();
-//   await expect(page.getByText("DataTable:")).toBeVisible();
-// });
+test("if a file is not loaded, view returns an error", async ({ page }) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("view");
+  await page.getByLabel("Submit").click();
+  await expect(page.getByText(`Result: Error viewing file.`)).toBeVisible();
+});
+
+test("if a loaded file is not associated with an actual CSV file, view returns an error", async ({
+  page,
+}) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath = "mock";
+  await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("view");
+  await page.getByLabel("Submit").click();
+  await expect(page.getByText(`Result: Error viewing file.`)).toBeVisible();
+});
+
+test("if search succeeds, the matching row is returned", async ({ page }) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath = "exampleCSV1";
+  await page.getByLabel("Command input").fill("load_file " + mock_filePath);
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("search 2 song");
+  await page.getByLabel("Submit").click();
+  // await expect(page.getByLabel("Row")).toHaveAttribute("aria-label", "Row");
+  await expect(page.getByRole("cell", { name: /Row/ })).toBeTruthy();
+});
+
+test("if search fails, an error message appears", async ({ page }) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath = "exampleCSV1";
+  const mock_column = "1";
+  const mock_value = "A";
+  await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("search 1 A");
+  await page.getByLabel("Submit").click();
+  await expect(
+    page.getByText(
+      `No matching rows were found for ${mock_value} in ${mock_column}.`
+    )
+  ).toBeVisible();
+});
+
+test("after loading a real csv file, view returns the contents of that file", async ({
+  page,
+}) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath = "exampleCSV1";
+  await page.getByLabel("Command input").fill("load_file" + mock_filePath);
+  await page.getByLabel("Command input").fill("view");
+  await page.getByLabel("Submit").click();
+  const array1 = ["1", "2", "3", "4", "5"];
+  const array2 = ["The", "song", "remains", "the", "same."];
+  await expect(page.getByRole("cell", { name: /Row/ })).toBeTruthy();
+});
 
 // test for search
 // test for mode

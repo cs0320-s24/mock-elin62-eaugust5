@@ -1,6 +1,12 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { REPLInput } from "./REPLInput";
+import { Dispatch, SetStateAction } from "react";
 import { mockedJson } from "./mock_data/mockedJson";
+
+/**
+ * This class' main purpose is to register commands that are to be
+ * executed in handleSubmit in REPLInput. A Developer is able to add their own
+ * functions into the REPLExport function and register them in the
+ * updateCommandFunctionMap() function inside of REPLExport.
+ */
 
 export interface REPLFunctionProps {
   mode: string;
@@ -8,7 +14,6 @@ export interface REPLFunctionProps {
   filePath: string;
   fileContents: string[][];
   mockedJson: string[][];
-  //   displayOutput: [];
   commandFunctionMap: CommandFunctionMap;
   setMode: Dispatch<SetStateAction<string>>;
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
@@ -31,6 +36,14 @@ export function REPLExport(
   commandString: string,
   args: string[]
 ): CommandFunctionMap {
+  const changeMode = (): string => {
+    const newMode = props.mode === "brief" ? "verbose" : "brief";
+    props.setMode(newMode); // Update mode
+    console.log(props.mode);
+    return `mode switched to ${newMode}`;
+  };
+
+  // loads a file and sets fileContents with the CSV data for that file
   const loadFile = (args: string[]): string => {
     const filePath = args[0];
     props.setFilePath(filePath);
@@ -45,6 +58,7 @@ export function REPLExport(
     return `Error loading file.`;
   };
 
+  // views a loaded file
   const view = (): string | string[][] => {
     if (props.filePath != null) {
       const newFileContents = mockedJson.get(props.filePath);
@@ -57,11 +71,12 @@ export function REPLExport(
     return `Error viewing file.`;
   };
 
-  const search = (args: string[]): string | string[] => {
+  // searches for matching rows depending on whether or not
+  const search = (args: string[]): string | string[][] => {
     const column = args[0];
     const value = args[1];
     let emptyRows = [];
-    let matchingRows = ["The", "song", "remains", "the", "same."];
+    let matchingRows = [["The", "song", "remains", "the", "same."]];
     if (column != "The" && value != "song") {
       return `No matching rows were found for ${value} in ${column}.`;
     } else {
@@ -69,49 +84,21 @@ export function REPLExport(
     }
   };
 
-  //   props.setCommandFunctionMap((prevState) => {
-  //     const newCommandFunctionMap = { ...prevState };
-  //     newCommandFunctionMap.load_file = () => loadFile(args);
-  //     newCommandFunctionMap.view = () => view();
-  //     return newCommandFunctionMap;
-  //   });
+  /* Register a function executable here */
+  /* const exampleFunction = (parameters): type => {} */
 
+  // A function that updates the commandFunctionMap
   const updateCommandFunctionMap = (): CommandFunctionMap => ({
     ...props.commandFunctionMap,
     load_file: loadFile,
     view: view,
-    //search: search,
+    search: search,
+    mode: changeMode,
+    /* register a created function here */
+    /* command: executeCommand */
   });
 
   const updatedCommandFunctionMap = updateCommandFunctionMap();
 
-  // Set the updated commandFunctionMap
-  //   props.setCommandFunctionMap(updatedCommandFunctionMap);
-
   return updatedCommandFunctionMap; // Return the updated commandFunctionMap
 }
-
-// switch (commandString) {
-//   case "mode":
-//     const newMode = props.mode === "brief" ? "verbose" : "brief";
-//     console.log(newMode);
-//     props.setMode(newMode); // Update mode immediately
-//     return `Switched to ${newMode} mode.`;
-//   case "load_file":
-//     return loadFile(args);
-//   case "view":
-//     return view();
-//   case "search":
-//     return search(args);
-//   // Add more commands here as needed
-//   default:
-//     return "Command not recognized";
-// }
-
-// export function search(args: string[]) {
-//   const column = args[0];
-//   const value = args[1];
-//   const matchingRows = [];
-//   // Logic to search for value in column
-//   return `Searching for ${value} in column ${column}`;
-// }
