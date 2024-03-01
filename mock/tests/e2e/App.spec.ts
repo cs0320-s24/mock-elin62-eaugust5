@@ -175,11 +175,49 @@ test("after loading a real csv file, view returns the contents of that file", as
   await page.getByLabel("Command input").fill("load_file" + mock_filePath);
   await page.getByLabel("Command input").fill("view");
   await page.getByLabel("Submit").click();
-  const array1 = ["1", "2", "3", "4", "5"];
-  const array2 = ["The", "song", "remains", "the", "same."];
   await expect(page.getByRole("cell", { name: /Row/ })).toBeTruthy();
 });
 
-// test for search
-// test for mode
-// test for adding a command by the developer
+test("switching mode more than once", async ({ page }) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByLabel("Submit").click();
+  await expect(page.getByText(`Result: mode switched to brief`)).toBeVisible();
+});
+
+test("loading different files", async ({ page }) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath1 = "exampleCSV1";
+  const mock_filePath2 = "exampleCSV2";
+  await page.getByLabel("Command input").fill("load_file " + mock_filePath1);
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("load_file " + mock_filePath2);
+  await page.getByLabel("Submit").click();
+  await expect(
+    page.getByText(`Result: Loaded file: exampleCSV2`)
+  ).toBeVisible();
+});
+
+test("running all known commands", async ({ page }) => {
+  // Assuming the view or search command is issued after login
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").click();
+  const mock_filePath1 = "exampleCSV1";
+  await page.getByLabel("Command input").fill("load_file " + mock_filePath1);
+  await page.getByLabel("Submit").click();
+  await page.getByLabel("Command input").fill("view");
+  
+  await page.getByLabel("Submit").click();
+  await expect(
+    page.getByText(`Result: Loaded file: exampleCSV2`)
+  ).toBeVisible();
+});

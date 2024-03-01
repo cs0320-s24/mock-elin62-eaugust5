@@ -1,18 +1,10 @@
 import "../styles/main.css";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import "../components/mock_data/mockedJson";
-import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
-import { stdout } from "process";
-import { REPLHistory } from "./REPLHistory";
-import {
-  REPLExport,
-  REPLFunction,
-  REPLFunctionProps,
-  CommandFunctionMap,
-} from "./REPLFunction";
+import { REPLExport, CommandFunctionMap } from "./REPLFunction";
 
-export interface REPLInputProps extends REPLFunction {
+export interface REPLInputProps {
   // map string to REPLfunction
   // use state for mode
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
