@@ -2,6 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 import "../styles/main.css";
 import { CommandFunctionMap } from "./REPLFunction";
 
+/**
+ * This class is responsible for displaying command history and results.
+ */
+
 interface REPLHistoryProps {
   history: { command: string; result: string | string[][] }[];
   mode: string;
