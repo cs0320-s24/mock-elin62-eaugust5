@@ -33,8 +33,6 @@ export interface REPLFunction {
 
 export function REPLExport(
   props: REPLFunctionProps,
-  commandString: string,
-  args: string[]
 ): CommandFunctionMap {
   const changeMode = (): string => {
     const newMode = props.mode === "brief" ? "verbose" : "brief";
@@ -75,7 +73,6 @@ export function REPLExport(
   const search = (args: string[]): string | string[][] => {
     const column = args[0];
     const value = args[1];
-    let emptyRows = [];
     let matchingRows = [["The", "song", "remains", "the", "same."]];
     if (column != "The" && value != "song") {
       return `No matching rows were found for ${value} in ${column}.`;
