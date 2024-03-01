@@ -5,7 +5,12 @@ import "../components/mock_data/mockedJson";
 import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
 import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
-import { REPLExport, REPLFunction, REPLFunctionProps } from "./REPLFunction";
+import {
+  REPLExport,
+  REPLFunction,
+  REPLFunctionProps,
+  CommandFunctionMap,
+} from "./REPLFunction";
 
 interface REPLInputProps extends REPLFunction {
   // map string to REPLfunction
@@ -18,6 +23,8 @@ interface REPLInputProps extends REPLFunction {
   isLoaded: boolean;
   filePath: string;
   fileContents: string[][];
+  commandFunctionMap: CommandFunctionMap;
+
   setHistory: Dispatch<SetStateAction<string[]>>;
   setMode: Dispatch<SetStateAction<string>>;
   setMockedJson: Dispatch<SetStateAction<string[][]>>;
@@ -57,9 +64,19 @@ export function REPLInput(props: REPLInputProps) {
    * of the REPL and how they connect to each other...
    */
 
-  function handleSubmit(props: REPLInputProps, commandString: string) {
+  function handleSubmit(
+    props: REPLInputProps & REPLFunctionProps,
+    commandString: string
+  ) {
     const [command, ...args] = commandString.split(/\s+/); // Split at each space
     const result = REPLExport(props, command, args);
+    const commandFunction = props.commandFunctionMap[command];
+    if (commandFunction) {
+      return commandFunction;
+    } else {
+      return "Command not recognized";
+    }
+
     // props.displayOutput = [command, result];
     const output =
       props.mode === "brief"
