@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { REPLInput } from "./REPLInput";
 import { mockedJson } from "./mock_data/mockedJson";
 
@@ -15,6 +15,9 @@ export interface REPLFunctionProps {
   setFileContents: Dispatch<SetStateAction<string[][]>>;
   setMockedJson: Dispatch<SetStateAction<string[][]>>;
 }
+
+const [isLoaded, setIsLoaded] = useState(false);
+const [fileContents, setFileContents] = useState<string[][]>([]);
 
 export interface REPLFunction {
   (args: Array<string>): String | String[][];
@@ -60,7 +63,7 @@ export function REPLExport(
     const value = args[1];
     let emptyRows = [];
     let matchingRows = ["The", "song", "remains", "the", "same."];
-    if ((emptyRows = [])) {
+    if (column != "The" && value != "song") {
       return `No matching rows were found for ${value} in ${column}.`;
     } else {
       return matchingRows;
