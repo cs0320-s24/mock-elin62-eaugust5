@@ -36,6 +36,9 @@ Test cases include checking login button visibility, handling unrecognized comma
 In order to use the program, a user will first press the login button in order to be able to enter any commands. Once logged in, the user can enter the following commands: mode, load_file, view, or search. Depending on the mode (brief or verbose), their output will vary. If the user is in the mode "brief," the history window will display just the output on its own line. If the user is in the mode "verbose," the history window will display its name alongside its output.
 
 As a developer, they would be able to add new commands by providing a a command name and function to run to our existing map.
+Our existing map exists as a prop in our REPL classes, named commandFunctionMap. At present, we have loaded our own functions,
+load_file, view, mode, and search into the map so that they are recognized and return the correct values. Developers would
+be able to do this same functionality with their added command names and respective functions by adding them to the map.
 
 # Collaboration
 
