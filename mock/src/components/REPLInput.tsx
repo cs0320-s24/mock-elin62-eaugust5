@@ -4,8 +4,13 @@ import { ControlledInput } from "./ControlledInput";
 import "../components/mock_data/mockedJson";
 import { REPLExport, CommandFunctionMap } from "./REPLFunction";
 
+/**
+ * This class' main purpose is to allow users to input commands, submit them, and display the output.
+ * This component manages state for command input, history, mode, file loading, and output display.
+ * It also handles the execution of commands through the provided command function map.
+ */
+
 export interface REPLInputProps {
-  // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: { command: string; result: string | string[][] }[];
   mode: string;
   mockedJson: string[][];
@@ -72,8 +77,6 @@ export function REPLInput(props: REPLInputProps) {
           ariaLabel={"Command input"}
         />
       </fieldset>
-      {/* TODO WITH TA: Build a handleSubmit function that increments count and displays the text in the button */}
-      {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
       <button
         aria-label={"Submit"}
         onClick={() => {
