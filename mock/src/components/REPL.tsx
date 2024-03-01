@@ -42,7 +42,7 @@ export default function REPL() {
         filePath={filePath}
         setFilePath={setFilePath}
         mockedJson={mockedJson}
-        setMockedJson={setMockedJson}
+        mockedJson={setMockedJson}
         dataTable={dataTable}
         setDataTable={setDataTable}
         tableVisible={tableVisible}

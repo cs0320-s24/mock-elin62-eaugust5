@@ -5,19 +5,25 @@ import "../components/mock_data/mockedJson";
 import { mockedJson } from "./mock_data/mockedJson"; // Import example CSV data
 import { stdout } from "process";
 import { REPLHistory } from "./REPLHistory";
-import { REPLExport, REPLFunction } from "./REPLFunction";
+import { REPLExport, REPLFunction, REPLFunctionProps } from "./REPLFunction";
 
 interface REPLInputProps extends REPLFunction {
   // map string to REPLfunction
   // use state for mode
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: string[];
-  setHistory: Dispatch<SetStateAction<string[]>>;
-  setMode: Dispatch<SetStateAction<string>>;
   displayOutput: []; // holds command and output, index at [1] if brief
   mode: string;
   mockedJson: string[][];
+  isLoaded: boolean;
+  filePath: string;
+  fileContents: string[][];
+  setHistory: Dispatch<SetStateAction<string[]>>;
+  setMode: Dispatch<SetStateAction<string>>;
   setMockedJson: Dispatch<SetStateAction<string[][]>>;
+  setIsLoaded: Dispatch<SetStateAction<boolean>>;
+  setFilePath: Dispatch<SetStateAction<string>>;
+  setFileContents: Dispatch<SetStateAction<string[][]>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -84,7 +90,7 @@ export function REPLInput(props: REPLInputProps) {
       <button
         aria-label={"Submit"}
         onClick={() => {
-          handleSubmit(commandString);
+          handleSubmit(props, commandString);
           // console.log(dataTable);
         }}
       >

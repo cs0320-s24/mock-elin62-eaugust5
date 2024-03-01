@@ -4,14 +4,15 @@ import { mockedJson } from "./mock_data/mockedJson";
 
 export interface REPLFunctionProps {
   mode: string;
-  setMode: Dispatch<SetStateAction<string>>;
   isLoaded: boolean;
-  setIsLoaded: Dispatch<SetStateAction<boolean>>;
   filePath: string;
-  setFilePath: Dispatch<SetStateAction<string>>;
   fileContents: string[][];
-  setFileContents: Dispatch<SetStateAction<string[][]>>;
   mockedJson: string[][];
+  displayOutput: [];
+  setMode: Dispatch<SetStateAction<string>>;
+  setIsLoaded: Dispatch<SetStateAction<boolean>>;
+  setFilePath: Dispatch<SetStateAction<string>>;
+  setFileContents: Dispatch<SetStateAction<string[][]>>;
   setMockedJson: Dispatch<SetStateAction<string[][]>>;
 }
 
